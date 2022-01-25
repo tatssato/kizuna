@@ -223,6 +223,11 @@ const preventDefault = (event: TouchEvent) => {
   }
 };
 
+export const binaryToUrl = (hash: string) =>
+  URL.createObjectURL(
+    new Blob([deserializeHash(hash)], { type: "image/jpeg" })
+  );
+
 export const generatePassphrase = async () => {
   const { default: randomWord } = await import("diceware-word");
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`;

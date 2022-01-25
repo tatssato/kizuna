@@ -5,7 +5,6 @@ import ContactsList from "../../components/ContactList";
 import Spinner from "../../components/Spinner";
 import Toolbar from "../../components/Toolbar";
 import { fetchMyContacts } from "../../redux/contacts/actions";
-import { IndexedContacts } from "../../redux/contacts/types";
 import { RootState } from "../../redux/types";
 import { indexContacts, useAppDispatch } from "../../utils/helpers";
 import AddContactFAB from "./AddContact/AddContactFAB";
@@ -39,7 +38,10 @@ const Contacts: React.FC = () => {
         {loading ? (
           <Spinner name="crescent" />
         ) : Object.values(contacts).length !== 0 ? (
-          <ContactsList contacts={indexedContacts ? indexedContacts : {}} />
+          <ContactsList
+            displayMsgBtn={true}
+            contacts={indexedContacts ? indexedContacts : {}}
+          />
         ) : (
           <EmptyContacts />
         )}

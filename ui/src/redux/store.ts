@@ -1,10 +1,9 @@
 import { AnyAction, applyMiddleware, createStore as create } from "redux";
-import logger from "redux-logger";
 import thunk, { ThunkMiddleware } from "redux-thunk";
 import {
   callZome,
+  client,
   getAgentId,
-  retry,
   init,
   client,
   createGroupDna,

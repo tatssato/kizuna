@@ -1,5 +1,6 @@
 import { serializeHash } from "@holochain-open-dev/core-types";
 import { FUNCTIONS, ZOMES } from "../../../connection/types";
+import { binaryToUrl } from "../../../utils/helpers";
 import { pushError } from "../../error/actions";
 import { AgentProfile, Profile } from "../../profile/types";
 import { ThunkAction } from "../../types";
@@ -28,6 +29,9 @@ const fetchBlocked =
           blocked[id] = {
             id,
             username: agentProfile.profile.nickname,
+            fields: agentProfile.profile.fields.avatar
+              ? { avatar: binaryToUrl(agentProfile.profile.fields.avatar) }
+              : {},
           };
         });
         dispatch({
@@ -36,11 +40,17 @@ const fetchBlocked =
         });
         return blocked;
       } catch (e) {
-        if (e.message.includes("Failed to get the username for this agent"))
+        if (
+          (e as any).message.includes(
+            "Failed to get the username for this agent"
+          )
+        )
           dispatch(
             pushError("TOAST", {}, { id: "redux.err.contacts.fetch-blocked.1" })
           );
-        else if (e.message.includes("No username for this agent exists"))
+        else if (
+          (e as any).message.includes("No username for this agent exists")
+        )
           dispatch(
             pushError("TOAST", {}, { id: "redux.err.contacts.fetch-blocked.2" })
           );

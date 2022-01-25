@@ -1,5 +1,5 @@
-import { serializeHash } from "@holochain-open-dev/core-types";
 import { FUNCTIONS, ZOMES } from "../../../connection/types";
+import { binaryToUrl } from "../../../utils/helpers";
 import { ThunkAction } from "../../types";
 import { AgentProfile, Profile } from "../types";
 
@@ -20,21 +20,21 @@ const searchProfiles =
       and remove yourself from the searched result as well as duplicates
       */
 
-      const keys = res.map((o) => o.agent_pub_key);
-
       const filteredMappedProfiles: Profile[] = res
         .filter(
           (res: AgentProfile) =>
             !Object.keys(contacts).includes(res.agent_pub_key) &&
             res.agent_pub_key !== id
         )
-        .filter(
-          ({ agent_pub_key }, index) => !keys.includes(agent_pub_key, index + 1)
-        ) // TODO: properly identify the cause of duplicate on HC side and fix it.
         .map((v: AgentProfile) => {
           return {
             id: v.agent_pub_key,
             username: v.profile.nickname,
+            fields: v.profile.fields.avatar
+              ? {
+                  avatar: binaryToUrl(v.profile.fields.avatar),
+                }
+              : {},
           };
         });
       console.log(filteredMappedProfiles);

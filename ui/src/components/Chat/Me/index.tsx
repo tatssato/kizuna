@@ -1,4 +1,5 @@
 import {
+  IonAvatar,
   IonIcon,
   IonItem,
   IonText,
@@ -6,11 +7,10 @@ import {
   useIonPopover,
 } from "@ionic/react";
 import {
-  radioButtonOff,
   alertCircleOutline,
   checkmarkCircleOutline,
   checkmarkDoneCircle,
-  personCircleOutline,
+  radioButtonOff,
 } from "ionicons/icons";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
@@ -20,6 +20,7 @@ import {
   TextPayload,
 } from "../../../redux/commons/types";
 import { usePressHandlers } from "../../../utils/helpers";
+import Identicon from "../../Identicon";
 import Spinner from "../../Spinner";
 import ChatPopover from "../ChatPopover";
 import File from "../File";
@@ -30,8 +31,8 @@ import { ChatProps } from "../types";
 
 const Me: React.FC<ChatProps> = ({
   id,
+  profile,
   payload,
-  author,
   timestamp,
   replyTo,
   onReply,
@@ -56,7 +57,7 @@ const Me: React.FC<ChatProps> = ({
     onHide: () => dismiss(),
     onPin: onPinMessage,
     onReply: () => {
-      if (onReply) onReply({ author, payload, id });
+      if (onReply) onReply({ author: profile.username, payload, id });
     },
     onDelete: () => {
       if (onDelete) onDelete();
@@ -107,7 +108,9 @@ const Me: React.FC<ChatProps> = ({
             />
           )}
           <IonText>
-            <h6 className="ion-no-margin ion-text-end">
+            <h6
+              className={`ion-no-margin ion-text-end ${styles["message-text"]}`}
+            >
               {intl.formatTime(timestamp)}
               <IonIcon
                 size="medium"
@@ -136,13 +139,17 @@ const Me: React.FC<ChatProps> = ({
             ></IonIcon>
           )
         ) : isP2P ? null : (
-          <div className={common.picture} style={{ marginLeft: "0.5rem" }}>
+          <div className={common["picture"]} style={{ marginLeft: "0.5rem" }}>
             {showProfilePicture ? (
-              <img
-                className={styles.avatar}
-                alt={`${author}'s profile`}
-                src={personCircleOutline}
-              />
+              profile.fields.avatar ? (
+                <IonAvatar className={common["avatar-container"]}>
+                  <img src={profile.fields.avatar} alt="avatar"></img>
+                </IonAvatar>
+              ) : (
+                <IonAvatar className={common["avatar-container"]}>
+                  <Identicon hash={profile.id!} size={35} />
+                </IonAvatar>
+              )
             ) : null}
           </div>
         )}
